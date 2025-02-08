@@ -1,8 +1,8 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <Raytracing/Utils/Colors.h>
-#include <Raytracing/Shapes/Rectangle.h>
-#include <Raytracing/Shapes/Circle.h>
+
+#include <Raytracing/Light/LightManager.h>
 
 int main(int argc, char* argv[]) {
 
@@ -35,9 +35,28 @@ int main(int argc, char* argv[]) {
     SDL_Color bg = SDL_BLACK;
     SDL_Color rectColor = SDL_WHITE;
 
-    Rectangle rectangle = Rectangle(500, 300, 200, 50, true);
-    Circle circleFill = Circle(200, 200, 180, true);
-    Circle circle = Circle(200, 200, 200, false);
+    std::vector<Ray> rays = {};
+    std::vector<std::vector<Vector2D>> positions = {};
+
+
+    Ray ray = Ray(
+        Vector2D(10, 10),
+        Vector2D(1, 0),
+        1.0f
+    );
+
+    for (int i = 0; i < 10; i++) {
+        rays.push_back(
+            Ray(
+                Vector2D(40, (i + 5) * 30),
+                Vector2D(1, 0),
+                1.0f
+            )
+        );
+        positions.push_back({ rays[i].GetPosition() });
+    }
+
+    LightManager manager = LightManager(rays);
 
 
     // Main loop
@@ -53,9 +72,20 @@ int main(int argc, char* argv[]) {
         SDL_RenderClear(renderer);
 
         SDL_SetRenderDrawColor(renderer, DECOMPOSE_COLOR(rectColor), 255);
-        rectangle.Draw(renderer);
-        circle.Draw(renderer);
-        circleFill.Draw(renderer);
+
+        std::vector<Vector2D> ray_pos = manager.Step(1);
+
+        for (int i = 0; i < ray_pos.size(); i++) {
+            positions[i].push_back(ray_pos[i]);
+
+            for (int j = 0; j < positions[i].size() - 1; j++) {
+                Vector2D currentPos = positions[i][j];
+                Vector2D nextPos = positions[i][j + 1];
+
+                SDL_RenderLine(renderer, currentPos.GetX(), currentPos.GetY(), nextPos.GetX(), nextPos.GetY());
+            }
+        }
+
 
         SDL_RenderPresent(renderer);
     }
