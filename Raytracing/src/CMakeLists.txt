@@ -1,4 +1,4 @@
-﻿file(GLOB_RECURSE FILES_SRC_E "Raytracing/*.cpp")
+﻿file(GLOB_RECURSE FILES_SRC_E "${CMAKE_SOURCE_DIR}/Raytracing/src/Raytracing/*.cpp")
 
 # Create the library
 add_library(RaytracingLib STATIC ${FILES_SRC_E})

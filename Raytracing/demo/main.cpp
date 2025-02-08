@@ -1,8 +1,8 @@
 #include <SDL3/SDL.h>
 #include <iostream>
-
-#define SDL_WHITE {255, 255, 255};
-#define SDL_RED {255, 0, 0};
+#include <Raytracing/Utils/Colors.h>
+#include <Raytracing/Shapes/Rectangle.h>
+#include <Raytracing/Shapes/Circle.h>
 
 int main(int argc, char* argv[]) {
 
@@ -32,7 +32,13 @@ int main(int argc, char* argv[]) {
     bool quit = false;
 
     SDL_Event event;
-    SDL_Color color = SDL_RED;
+    SDL_Color bg = SDL_BLACK;
+    SDL_Color rectColor = SDL_WHITE;
+
+    Rectangle rectangle = Rectangle(500, 300, 200, 50, true);
+    Circle circleFill = Circle(200, 200, 180, true);
+    Circle circle = Circle(200, 200, 200, false);
+
 
     // Main loop
     while (!quit) {
@@ -42,14 +48,19 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+        SDL_SetRenderDrawColor(renderer, DECOMPOSE_COLOR(bg), 255);
+        
         SDL_RenderClear(renderer);
+
+        SDL_SetRenderDrawColor(renderer, DECOMPOSE_COLOR(rectColor), 255);
+        rectangle.Draw(renderer);
+        circle.Draw(renderer);
+        circleFill.Draw(renderer);
 
         SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyRenderer(renderer);
-
     SDL_DestroyWindow(window);
 
     SDL_Quit();

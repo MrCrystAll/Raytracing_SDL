@@ -2,9 +2,3 @@
 //
 
 #include <Raytracing/Raytracing.h>
-
-Dummy::Dummy(int dummyValue) : dummyValue(dummyValue) {};
-
-void Dummy::Print() {
-	std::cout << dummyValue << std::endl;
-}
